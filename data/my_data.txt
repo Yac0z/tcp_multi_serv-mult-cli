@@ -1,0 +1,49 @@
+i love you 
+made with love
+yes I am the owner of this file
+
+Le travail à réaliser est composé de deux parties :
+ Partie n°1 : Développement d’une application Client/Serveur en mode non connecté (UDP)
+ 1. Réaliser le programme d'un client (clientUDP.c) qui prend en argument
+ l'adresse du serveur (nom hôte + numéro de port). Ce client envoie au serveur
+ un nombre n (n est un nombre aléatoire compris entre 1 et NMAX), ensuite il
+ affiche la réponse reçue du serveur.
+ 2. Réaliser le programme d'un serveur (serveurUDP.c) qui prend en argument un
+ numéro de port. Ce serveur reçoit du client un nombre n, ensuite il envoi au
+ client n nombres tirés au sort.
+ 3. Donner un script shell paramétré avec les noms des codes sources permettant
+ d’automatiser les étapes de compilation et d’édition des liens (Donner un
+ makefile).
+ 4. Fournir le code source+ exécutable + jeu de test + rapport.
+ Partie n°2 : Développement d’une application Clients/Serveur en mode connecté (TCP)
+ Dans cette partie, il s’agit de réaliser une application répartie en mode connecté (TCP)
+ permettant aux clients de demander l’exécution d’un service particulier par un serveur
+  Le processus client doit fournir une interface Homme-Machine (en mode texte ou
+ graphique) permettant :-L’authentification (nom d’utilisateur + mot de passe) auprès du serveur
+-Répéter
+ |
+ |
+ * La visualisation de la liste des services offerts par le serveur
+ * Choix du service et envoie de la demande du service souhaité
+ |
+ * La visualisation des résultats renvoyés par le serveur.
+ Jusqu'à (choix = Fin)
+ Le processus serveur (serveur parallèle) fourni au moins les services suivants :
+ Envoie de la date complète (jour / mois / année) et l’heure (heure : minutes : secondes)
+ de l’horloge système du serveur.-Envoie de la liste des fichiers d’un répertoire-Envoie du contenu d’un fichier-Envoie de la durée déjà écoulée depuis le début de la connexion du client courant.
+ 1. Réaliser le programme d'un client (clientTCP.c)
+ 2. Réaliser le programme du serveur (serveurTCP.c)
+ 3. Donner un script shell paramétré avec les noms des codes sources permettant
+ d’automatiser les étapes de compilation et d’édition des liens (Makefile).
+ Cette deuxième partie doit être réalisée en quatre étapes :- Monoclient/monoserveur (Monoservice)- Multiclient/monoserveur (Monoservice)- Multiclent/multiserveur (multiservice)- Ajoutde l’interface graphique (Optionnel)
+ III- Informations sur le Mini Projet
+ Le Mini Projet devra être réalisé en binôme.
+ Le dossier est composé de :----
+ Fichiers sources (code en C sous unix) + fichier exécutable.
+ Script pour automatiser la compilation, l’édition des liens et l’exécution
+ (Makefile).
+ Jeu de test
+ Rapport de synthèse
+ N.B. : Tout étudiant ne répondant pas aux questions relatives à la compréhension de son
+ code aura un ZéRO !!!!!
+ Date de remise : le 12 Décembre 2025 à minuit
