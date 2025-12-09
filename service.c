@@ -34,29 +34,27 @@ void directory_files(char *buffer, int max_buffer) {
 
 void file_content(char *buffer, int max_buffer, int sockfd) {
     FILE *file_ptr ;
-    bzero(buffer, max_buffer) ;
-    size_t buffer_read ;
-    size_t buffer_sent ;
+    char file_buffer[4096];  // Larger buffer for file content
+    bzero(file_buffer, sizeof(file_buffer));
 
     file_ptr = fopen("./data/my_data.txt", "r") ;
     if(file_ptr == NULL){
-        // Using 'sockfd' which is passed as an argument. 'new_sockfd' was not defined.
-        write(sockfd, "this file not exist", 20) ;
+        strcpy(buffer, "ERROR: File does not exist");
+        write(sockfd, buffer, strlen(buffer)) ;
         return ;
     }else{
-        // Loop based on fread's return value for correctness.
-        while ((buffer_read = fread(buffer, 1, max_buffer, file_ptr)) > 0) {
-            // Safely print the buffer content to server's stdout for debugging, adding a newline for clarity.
-            printf("Sending chunk: %.*s\n", (int)buffer_read, buffer);
-            fflush(stdout);
-
-            buffer_sent = send(sockfd, buffer, buffer_read, 0);
-            if (buffer_sent < 0) {
-                perror("send failed");
-                break; // Exit loop on send error
-            }
-            bzero(buffer, max_buffer);
+        // Read entire file into buffer
+        size_t bytes_read = fread(file_buffer, 1, sizeof(file_buffer) - 1, file_ptr);
+        file_buffer[bytes_read] = '\0';  // Null terminate
+        
+        // Send the file content
+        ssize_t buffer_sent = write(sockfd, file_buffer, bytes_read);
+        if (buffer_sent < 0) {
+            perror("send failed");
+        } else if (buffer_sent < bytes_read) {
+            perror("Partial write of file content");
         }
+        
         fclose(file_ptr) ;
     }
 }

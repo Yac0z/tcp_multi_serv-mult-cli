@@ -28,6 +28,11 @@ int main(int argc, char *argv[])
             run = 0 ;
             continue ;
         }
+        if (n == 0){
+            printf("Server closed connection\n");
+            run = 0 ;
+            continue ;
+        }
 
         printf("%s\n", buffer);
 

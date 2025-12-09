@@ -60,13 +60,19 @@ char send_question(){
 }
 
 int show_answer(){
-    bzero(buffer,MAX_BUFFER); 
-    n = read(sockfd, buffer, MAX_BUFFER-1);
+    char response[4096];  // Larger buffer for file content
+    bzero(response, sizeof(response)); 
+    n = read(sockfd, response, sizeof(response)-1);
     if (n < 0){
         perror("ERROR reading from socket");
         return 0 ;
     }
-    printf("%s\n", buffer) ;
+    if (n == 0){
+        printf("Server closed connection\n");
+        return 0 ;
+    }
+    printf("%s\n", response) ;
+    return 1 ;
 }
 
 int reseve_answer(char answer){
@@ -79,19 +85,7 @@ int reseve_answer(char answer){
             show_answer() ;
             return 1 ;
         case '3' :
-            // This loop will now read until the server is done sending.
-            ssize_t bytes_received;
-            bzero(buffer, MAX_BUFFER);
-            while ((bytes_received = recv(sockfd, buffer, MAX_BUFFER - 1, 0)) > 0) {
-                // Safely print the received chunk of the file.
-                // %.*s prints a string of a specified length.
-                printf("%.*s", (int)bytes_received, buffer);
-                bzero(buffer, MAX_BUFFER);
-            }
-            // A newline for better formatting after the file content is printed
-            printf("\n");
-            // Since the server closes the connection after sending a file,
-            // we should also terminate the client.
+            show_answer() ;
             return 1 ;
         case '4' :
             show_answer();

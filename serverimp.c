@@ -48,6 +48,10 @@ int listen_question(int sock) {
         perror("ERROR reading from socket");
         return -1 ;
     }
+    if (n == 0) {
+        printf("Client closed connection\n");
+        return 5; // Return 5 to exit cleanly
+    }
 
     return atoi(buffer) ;
 }
@@ -63,6 +67,10 @@ int answer_question(int sock, int answer, time_t start_time){
                 perror("ERROR writing to socket");
                 return 0 ;
             }
+            if (n < strlen(buffer)){
+                perror("Partial write occurred");
+                return 0 ;
+            }
             
             return 1 ;
         case 2 :
@@ -73,14 +81,18 @@ int answer_question(int sock, int answer, time_t start_time){
                 perror("ERROR writing to socket");
                 return 0 ;
             }
+            if (n < strlen(buffer)){
+                perror("Partial write occurred");
+                return 0 ;
+            }
         
             return 1 ;
         case 3 :
 
             file_content(buffer, MAX_BUFFER, sock) ;
             
-            // Return 0 to signal that the session should end after the file transfer.
-            return 0 ;
+            // Continue the session after file transfer
+            return 1 ;
         case 4 :
             session_time(buffer, MAX_BUFFER, start_time);
             n = write(sock, buffer, strlen(buffer));
@@ -88,10 +100,23 @@ int answer_question(int sock, int answer, time_t start_time){
                 perror("ERROR writing to socket");
                 return 0;
             }
+            if (n < strlen(buffer)){
+                perror("Partial write occurred");
+                return 0 ;
+            }
             return 1;
         case 5 :
             return 0 ;
+        case -1 :
+            // Error reading from socket, close connection
+            return 0 ;
         default :
+            // Invalid option
+            strcpy(buffer, "Invalid option. Please try again.");
+            n = write(sock, buffer, strlen(buffer));
+            if (n < strlen(buffer)){
+                return 0 ;
+            }
             return 1 ;
     }
 }
@@ -101,7 +126,16 @@ void handle_client(int sock) {
     time(&session_start_time);
 
     int run = 1;
-    char *menu = "what are you want to do\n1.show date and time.\n2.list a directory files.\n3.display file containt.\n4.show session elapsed time.\n5.exit." ;
+    char *menu = "\n========================================\n"
+                 "         SERVER MENU\n"
+                 "========================================\n"
+                 "1. Show date and time\n"
+                 "2. List directory files\n"
+                 "3. Display file content\n"
+                 "4. Show session elapsed time\n"
+                 "5. Exit\n"
+                 "========================================\n"
+                 "Enter your choice: " ;
 
     while (run)
     {
@@ -109,6 +143,11 @@ void handle_client(int sock) {
         n = write(sock, menu, strlen(menu)) ;
         if (n < 0){
              perror("ERROR writing to socket");
+             run = 0;
+             continue ;
+        }
+        if (n < strlen(menu)){
+             perror("Partial write of menu");
              run = 0;
              continue ;
         }
