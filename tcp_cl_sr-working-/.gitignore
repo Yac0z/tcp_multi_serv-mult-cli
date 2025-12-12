@@ -1,0 +1,27 @@
+# Compiled binaries
+server
+client
+gui_client
+*.o
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.a
+*.so
+core
+
+# Runtime data
+data/credentials.dat
+
+# Logs
+*.log
