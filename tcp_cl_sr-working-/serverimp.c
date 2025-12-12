@@ -138,6 +138,9 @@ void handle_client(int sock) {
     time_t session_start_time;
     time(&session_start_time);
 
+    // Reload users in case they were updated by another process
+    load_users();
+
     // Authentication phase
     printf("[AUTH] Client connected. Starting authentication...\n");
     

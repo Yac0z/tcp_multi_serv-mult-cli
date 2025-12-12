@@ -187,22 +187,34 @@ int register_user(const char *username, const char *password) {
 int verify_credentials(const char *username, const char *password) {
     pthread_mutex_lock(&auth_mutex);
     
+    printf("[DEBUG] Verifying credentials for user: %s\n", username);
+    printf("[DEBUG] User count: %d\n", user_count);
+    
     for (int i = 0; i < user_count; i++) {
+        printf("[DEBUG] Checking user %d: %s\n", i, users[i].username);
         if (strcmp(users[i].username, username) == 0) {
+            printf("[DEBUG] Found user: %s\n", username);
+            printf("[DEBUG] Stored salt: %s\n", users[i].salt);
+            printf("[DEBUG] Stored hash: %s\n", users[i].password_hash);
+            
             // Convert stored salt from hex
             unsigned char salt[SALT_SIZE];
             hex_to_bytes(users[i].salt, salt, SALT_SIZE);
 
             // Hash provided password
-            unsigned char hash[HASH_SIZE];
+            unsigned char hash[SHA256_DIGEST_LENGTH];
             hash_password(password, salt, hash);
 
             // Convert to hex for comparison
-            char hash_hex[HASH_SIZE * 2 + 1];
+            char hash_hex[SHA256_DIGEST_LENGTH * 2 + 1];
             bytes_to_hex(hash, SHA256_DIGEST_LENGTH, hash_hex);
 
+            printf("[DEBUG] Computed hash: %s\n", hash_hex);
+            printf("[DEBUG] Hash comparison: %d\n", strcmp(hash_hex, users[i].password_hash));
+            
             // Compare hashes
             int result = (strcmp(hash_hex, users[i].password_hash) == 0) ? 1 : 0;
+            printf("[DEBUG] Verification result: %d\n", result);
             pthread_mutex_unlock(&auth_mutex);
             return result;
         }
